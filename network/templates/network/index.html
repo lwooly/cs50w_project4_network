@@ -1,5 +1,19 @@
 {% extends "network/layout.html" %}
 
 {% block body %}
-    TODO
+
+<h1 class="m-2">All Posts</h1>
+{% if user.is_authenticated %}
+<div id="new-post" class="list-group-item m-1 rounded container-fluid">
+    <form id="new-post-form">
+            <label for="post-body" class="form-label, h4">New Post</label>
+            <textarea class="form-control"  id="post-body" rows="3"></textarea>
+            <button id="post-btn" class="btn btn-primary mt-1">Post</button>
+    </form>
+</div>
+{% endif %}
+
+<div id="posts-view">
+</div>
+    
 {% endblock %}

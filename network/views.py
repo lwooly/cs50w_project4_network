@@ -1,15 +1,46 @@
+import json
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
+from django.views.decorators.csrf import csrf_exempt
 
-from .models import User
+from django import forms
+
+from .models import User, Post
+
+#django form not used - javascript request instead for now
+#class NewPostForm(forms.Form):
+    #post = forms.CharField(widget=forms.Textarea(attrs={"rows":"5"}))
+
 
 
 def index(request):
     return render(request, "network/index.html")
 
+
+@csrf_exempt
+def new_post(request):
+    #new post must be created via POST request:
+    if request.method != "POST":
+        return JsonResponse({ "error": "Post request required"}, status=400)
+    
+    #get details of post
+    data = json.loads(request.body)
+    post_body = data.get("post_body", "")
+
+    if len(post_body) <= 0:
+        return JsonResponse({"error":"Post requires text"}, status=400)
+
+    #create new post
+    post_obj = Post(
+        user = request.user,
+        body = post_body
+    )
+    post_obj.save()
+
+    return JsonResponse({"message":"Post added successfully"}, status=201)
 
 def login_view(request):
     if request.method == "POST":
