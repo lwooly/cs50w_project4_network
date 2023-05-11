@@ -51,6 +51,9 @@ function new_post(event) {
         //clear posts div and reload with a GET request.
         document.querySelector('#posts-view').innerHTML = '';
         load_posts();
+
+        //clear text area input ready for new post
+        document.querySelector('#post-body').value = '';
     });
 }
 
