@@ -20,6 +20,14 @@ def index(request):
     return render(request, "network/index.html")
 
 
+def load_posts(request):
+    #load posts from get request
+    posts = Post.objects.all()
+    posts = posts.order_by("-timestamp").all()
+    print(posts)
+    return JsonResponse([post.serialize() for post in posts], safe=False)
+
+
 @csrf_exempt
 def new_post(request):
     #new post must be created via POST request:

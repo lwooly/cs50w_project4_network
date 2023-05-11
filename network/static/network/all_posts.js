@@ -11,7 +11,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function load_posts() {
     //GET request to API to load all existing posts
+    console.log("function called");
+    fetch('/posts')
+    .then(response => response.json())
+    .then(posts => {
+        //loop through posts
+        posts.forEach(post => {
+            const element = document.createElement('div');
+            element.classList.add('card', 'rounded',  'container-fluid', 'm-3');
+            element.innerHTML = `
+            <h3>${post.user}</h3>
+            <p>${post.body}</p>
+            <p>${post.timestamp}</p>`
 
+            document.querySelector('#posts-view').append(element)
+        });
+    });
 }
 
 function new_post(event) {
