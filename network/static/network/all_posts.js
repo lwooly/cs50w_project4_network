@@ -1,15 +1,14 @@
 document.addEventListener('DOMContentLoaded', function() {
 
-    console.log("dom loaded");
+    //new post when user clicks post button
+    document.querySelector('#new-post-form').onsubmit = new_post;
 
     //by default load all posts
     load_posts();
-
-    //new post when user clicks post button
-    document.querySelector('#new-post-form').onsubmit = new_post;
 });
 
 function load_posts() {
+
     //GET request to API to load all existing posts
     console.log("function called");
     fetch('/posts')
@@ -22,7 +21,8 @@ function load_posts() {
             element.innerHTML = `
             <h3>${post.user}</h3>
             <p>${post.body}</p>
-            <p>${post.timestamp}</p>`
+            <p>${post.timestamp}</p>
+            <p>Likes: ${post.likes}<p>`
 
             document.querySelector('#posts-view').append(element)
         });
@@ -47,6 +47,10 @@ function new_post(event) {
     .then(result => {
         // Print result
         console.log(result);
+
+        //clear posts div and reload with a GET request.
+        document.querySelector('#posts-view').innerHTML = '';
+        load_posts();
     });
 }
 
