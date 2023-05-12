@@ -1,0 +1,21 @@
+{% extends "network/layout.html" %}
+
+{% load static %}
+
+{% block script %} 
+    <script src="{% static 'network/profile.js' %}"></script>
+{% endblock %}
+
+{% block body %}
+<input type="hidden" id="user-id" value="{{ profile.id }}">
+<div class="mx-5">
+    <h1 class="m-2">{{ profile.username }} Profile</h1>
+    <h3 class="m-2">{{ profile.followers }}</h3>
+
+    <button id="follow" class="btn btn-primary">Follow</button>
+    <button id="unfollow" class="btn btn-primary">Unfollow</button>
+    
+    <div id="posts-view" class="">
+    </div>
+</div>
+{% endblock %}

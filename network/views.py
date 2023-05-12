@@ -19,10 +19,24 @@ from .models import User, Post
 def index(request):
     return render(request, "network/index.html")
 
+def profile(request, user_id):
+    user = User.objects.get(pk=user_id)
+    return render(request, "network/profile.html", {
+        "profile":user
+    })
 
-def load_posts(request):
-    #load posts from get request
-    posts = Post.objects.all()
+
+def load_posts(request, user_id=None):
+    print(f"User id: {user_id}")
+    if user_id is None:
+        #load all posts from get request
+        posts = Post.objects.all()
+        
+    else:
+        #load posts from that user
+        user = User.objects.get(pk=user_id)
+        posts = Post.objects.filter(user=user)
+    
     posts = posts.order_by("-timestamp").all()
     return JsonResponse([post.serialize() for post in posts], safe=False)
 

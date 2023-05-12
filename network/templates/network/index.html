@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block body %}
-<div class="card-wrapper mx-5">
+<div class="mx-5">
     <h1 class="m-2">All Posts</h1>
     {% if user.is_authenticated %}
     <div id="new-post" class="card rounded container-fluid m-3 p-3">
@@ -19,7 +19,7 @@
     </div>
     {% endif %}
 
-    <div id="posts-view" class="">
+    <div id="posts-view">
     </div>
 </div>
 {% endblock %}

@@ -3,6 +3,7 @@ from django.db import models
 
 
 class User(AbstractUser):
+    follow = models.ManyToManyField("self", related_name="followers", blank=True)
     pass
 
 class Post(models.Model):
@@ -14,7 +15,8 @@ class Post(models.Model):
     def serialize(self):
         return {
         "id": self.id,
-        "user": self.user.username,
+        "user_id": self.user.id,
+        "username": self.user.username,
         "body": self.body,
         "timestamp": self.timestamp.strftime("%b %d %Y, %I:%M %p"),
         "likes": [User.username for User in self.likes.all()]
