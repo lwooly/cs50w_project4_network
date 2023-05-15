@@ -8,13 +8,13 @@ function load_posts(user_id) {
         //loop through posts
         posts.forEach(post => {
             const element = document.createElement('div');
-            console.log(post.user_id)
+            console.log(post.likes)
             element.classList.add('card', 'rounded',  'container-fluid', 'm-3');
             element.innerHTML = `
-            <a class="nav-link" href="{% url 'profile/${post.user_id}'  %}"><h3>${post.username}</h3></a>
+            <a class="nav-link" href="/profile/${post.user_id}/"><h3>${post.username}</h3></a>
             <p>${post.body}</p>
             <p>${post.timestamp}</p>
-            <p>Likes: ${post.likes}</p>`
+            <p>Likes:${post.likes}</p>`
 
             document.querySelector('#posts-view').append(element)
         });

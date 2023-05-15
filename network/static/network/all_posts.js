@@ -8,7 +8,6 @@ document.addEventListener('DOMContentLoaded', function() {
         newPostForm.onsubmit = new_post;
     }
     
-
 });
 
 function new_post(event) {

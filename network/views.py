@@ -19,6 +19,41 @@ from .models import User, Post
 def index(request):
     return render(request, "network/index.html")
 
+
+@csrf_exempt
+def follow(request):
+    print ('function called')
+    if request.method == "POST":
+            
+        data = json.loads(request.body)
+        follow = data.get("follow","")
+        profile_id = data.get("userId","")
+        user_obj = request.user
+        user_profile = User.objects.get(pk=profile_id)
+
+        if follow == "true":
+            # add profile to follow field in user model
+            user_obj.follow.add(user_profile)
+            return JsonResponse({ "message": "Profile followed"}, status=201)
+
+        elif follow == "false":
+            #remove profile id from follow field in user model
+            user_obj.follow.remove(user_profile)
+            return JsonResponse({"message": "Profile unfollowed"}, status=201)
+
+        else:
+            return JsonResponse({"error": "Follow status undefined"}, status=400)
+    
+    #GET request for user user is following.
+    if request.method == "GET":
+        user_obj = request.user
+        following = user_obj.follow.all()
+        following_id = []
+        for item in following:
+            following_id.append(item.id)
+        return JsonResponse(following_id, safe=False)
+
+
 def profile(request, user_id):
     user = User.objects.get(pk=user_id)
     return render(request, "network/profile.html", {

@@ -4,7 +4,7 @@ from django.db import models
 
 class User(AbstractUser):
     follow = models.ManyToManyField("self", related_name="followers", blank=True)
-    pass
+    
 
 class Post(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts')
@@ -19,5 +19,5 @@ class Post(models.Model):
         "username": self.user.username,
         "body": self.body,
         "timestamp": self.timestamp.strftime("%b %d %Y, %I:%M %p"),
-        "likes": [User.username for User in self.likes.all()]
+        "likes": len(self.likes.all())
         }
