@@ -1,0 +1,16 @@
+{% extends "network/layout.html" %}
+
+{% load static %}
+
+{% block script %} 
+    <script src="{% static 'network/following.js' %}"></script>
+{% endblock %}
+
+{% block body %}
+<input type="hidden" id="user-id" value="{{ profile.id }}">
+<input type="hidden" id="current-user-id" value="{{ user.id }}">
+    
+    <div id="posts-view" class="">
+    </div>
+</div>
+{% endblock %}

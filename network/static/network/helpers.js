@@ -20,3 +20,14 @@ function load_posts(user_id) {
         });
     });
 }
+
+function getFollowing() {
+ //Get request to API to check if profile is followed
+ return fetch('/follow')
+ .then(response => response.json())
+ .then(ids => {
+     idsString = ids.toString()
+     console.log(`following these ids: ${idsString}`);
+     return idsString;
+ });
+}

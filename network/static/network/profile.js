@@ -33,28 +33,26 @@ function LoadFollowBtns(profileId) {
     }
     else {
         //Get request to API to check if profile is followed
-        fetch('/follow')
-        .then(response => response.json())
-        .then(ids => {
-            console.log(typeof ids.toString());
-            console.log(typeof profileId);
-            ids = ids.toString()
+        getFollowing()
+            .then(ids=> {
+                console.log(`return from getFollowing function ${ids}`)
 
-            if (ids.includes(profileId.toString())) {
-                //hide follow button and show unfollow button
-                document.querySelector('#follow').style.display = 'none';
-                document.querySelector('#unfollow').style.display = 'block';
-                console.log('show unfollow button')
-            }
-            else {
-                //hide unfollow button and show follow button
-                document.querySelector('#follow').style.display = 'block';
-                document.querySelector('#unfollow').style.display = 'none';
-                console.log("show follow button")
-            }
-        });
-    }
+                if (ids.includes(profileId.toString())) {
+                    //hide follow button and show unfollow button
+                    document.querySelector('#follow').style.display = 'none';
+                    document.querySelector('#unfollow').style.display = 'block';
+                    console.log('show unfollow button')
+                }
+                else {
+                    //hide unfollow button and show follow button
+                    document.querySelector('#follow').style.display = 'block';
+                    document.querySelector('#unfollow').style.display = 'none';
+                    console.log("show follow button")
+                }
+            })
+    };
 }
+
 
 
 function follow(follow, userId) {

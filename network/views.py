@@ -22,7 +22,6 @@ def index(request):
 
 @csrf_exempt
 def follow(request):
-    print ('function called')
     if request.method == "POST":
             
         data = json.loads(request.body)
@@ -44,7 +43,7 @@ def follow(request):
         else:
             return JsonResponse({"error": "Follow status undefined"}, status=400)
     
-    #GET request for user user is following.
+    #GET request for users user is following.
     if request.method == "GET":
         user_obj = request.user
         following = user_obj.follow.all()
@@ -59,6 +58,9 @@ def profile(request, user_id):
     return render(request, "network/profile.html", {
         "profile":user
     })
+
+def following(request, user_id):
+    return render(request, "network/following.html")
 
 
 def load_posts(request, user_id=None):
