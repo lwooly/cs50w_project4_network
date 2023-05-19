@@ -1,7 +1,9 @@
 function load_posts(user_id) {
 
     //GET request to API to load all existing posts
-    console.log(`User id: ${user_id}`);
+    console.log(`User id type check: ${user_id}`);
+    
+    // fetch for current user_id, if no user id respond with all posts
     fetch(`/load_posts/${user_id ? user_id : ''}`)
     .then(response => response.json())
     .then(posts => {

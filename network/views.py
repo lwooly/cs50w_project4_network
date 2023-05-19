@@ -1,6 +1,8 @@
 import json
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
+from django.db.models import Q
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
@@ -59,21 +61,31 @@ def profile(request, user_id):
         "profile":user
     })
 
+
+@login_required
 def following(request, user_id):
     return render(request, "network/following.html")
 
 
 def load_posts(request, user_id=None):
-    print(f"User id: {user_id}")
     if user_id is None:
         #load all posts from get request
         posts = Post.objects.all()
+
+    
         
     else:
-        #load posts from that user
-        user = User.objects.get(pk=user_id)
-        posts = Post.objects.filter(user=user)
+        user_id = str(user_id)
+        user_id_list = user_id.split(',')
+        
+        #update so that user_id can be an array of user ids
+        print(f"User id: {user_id_list}")
+        #load posts from users - django query to get users in the users_id array
+        users = User.objects.filter(id__in=user_id_list)
+        #add user posts to array
+        posts = Post.objects.filter(user__in=users)
     
+    #keep posts in queryset so that .orderby() can be used.
     posts = posts.order_by("-timestamp").all()
     return JsonResponse([post.serialize() for post in posts], safe=False)
 
