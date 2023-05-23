@@ -147,7 +147,7 @@ def load_posts(request, user_id=None):
     #keep posts in queryset so that .orderby() can be used.
     posts = posts.order_by("-timestamp").all()
     # show 10 posts per page
-    p = Paginator(posts,10)
+    p = Paginator(posts,3)
     page_number = request.GET.get('page')
     print(f'page number: {page_number}')
     try:
@@ -156,11 +156,15 @@ def load_posts(request, user_id=None):
         #return empty response if page out of range
         return JsonResponse([], safe=False)
     
+    print(p.num_pages)
+    
 
-    response = JsonResponse([post.serialize() for post in page_obj], safe=False)
-    response['paginator'] = {'num_pages':p.num_pages}
+    response = JsonResponse({
+        'posts':[post.serialize() for post in page_obj], 
+        'paginator': {'num_pages':p.num_pages},
+        })
+    
     return response
-
 
 
 @csrf_exempt

@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", function() {
     .then(ids=> {
         console.log(ids);
         if (ids){
-            load_posts(ids);
+            managePosts(ids);
         }
              
     })

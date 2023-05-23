@@ -6,9 +6,6 @@ document.addEventListener('DOMContentLoaded', function() {
     //load correct follow buttons
     LoadFollowBtns(userId);
 
-    // load posts for this profile
-    load_posts(userId);
-
     // follow and unfollow on button click
     const followBtn = document.querySelector('#follow');
     if (followBtn) {
@@ -18,6 +15,9 @@ document.addEventListener('DOMContentLoaded', function() {
     if (unfollowBtn) {
         unfollowBtn.addEventListener('click', () => follow('false', userId));
     }
+
+    // load posts for this profile
+    managePosts(userId);
 
 })
 
