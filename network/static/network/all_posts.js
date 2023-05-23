@@ -1,13 +1,31 @@
 document.addEventListener('DOMContentLoaded', function() {
-    //by default load all posts
-    load_posts();
-
+   
     //new post when user clicks post button
     const newPostForm = document.querySelector('#new-post-form');
     if (newPostForm) {
         newPostForm.onsubmit = new_post;
     }
     
+    //keep track of page number
+    let pageNumber = 1;
+
+    document.querySelector('#previousBtn').addEventListener('click', function(event) {
+        event.preventDefault()
+        pageNumber = pageNumber - 1;
+        console.log(`Page number: ${pageNumber}`);
+        load_posts("", pageNumber);
+    })
+    document.querySelector('#nextBtn').addEventListener('click', function(event) {
+        event.preventDefault()
+
+        pageNumber = pageNumber + 1;
+        console.log(`Page number: ${pageNumber}`);
+        load_posts("", pageNumber);
+    })
+
+    
+     //by default load all posts
+     load_posts("", pageNumber);
 });
 
 function new_post(event) {
@@ -27,7 +45,7 @@ function new_post(event) {
     .then(response => response.json())
     .then(result => {
         // Print result
-        console.log(result);
+        console.log(result['paginator']);
 
         //clear posts div and reload with a GET request.
         document.querySelector('#posts-view').innerHTML = '';

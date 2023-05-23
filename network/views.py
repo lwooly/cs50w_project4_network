@@ -149,13 +149,18 @@ def load_posts(request, user_id=None):
     # show 10 posts per page
     p = Paginator(posts,10)
     page_number = request.GET.get('page')
+    print(f'page number: {page_number}')
     try:
         page_obj = p.get_page(page_number)
     except EmptyPage:
         #return empty response if page out of range
         return JsonResponse([], safe=False)
+    
 
-    return JsonResponse([post.serialize() for post in page_obj], safe=False)
+    response = JsonResponse([post.serialize() for post in page_obj], safe=False)
+    response['paginator'] = {'num_pages':p.num_pages}
+    return response
+
 
 
 @csrf_exempt
