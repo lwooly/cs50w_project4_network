@@ -1,14 +1,20 @@
 document.addEventListener('DOMContentLoaded', function() {
-   
-    //load posts
-    managePosts();
     
     //new post when user clicks post button
     const newPostForm = document.querySelector('#new-post-form');
     if (newPostForm) {
         newPostForm.onsubmit = new_post;
     }
-})
+
+        //load posts and then enable button selection - asynchronously
+    
+    managePosts();
+
+
+});
+
+
+
 
 
 function new_post(event) {
