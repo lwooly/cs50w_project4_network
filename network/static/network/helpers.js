@@ -41,7 +41,10 @@ function load_posts(user_id, pageNumber=1) {
             let button = '';
             console.log(typeof(post.user_id));
             if (currentUser === post.user_id.toString()) {
-                button = `<button id="${post.id}" class="edit-btn btn btn-primary mt-2">Edit</button>`;
+                button = `
+                <div class="text-left mb-2">
+                    <button id="${post.id}" class="edit-btn btn btn-primary mt-2">Edit</button>
+                </div>`;
             }
             
             element.innerHTML = `
@@ -59,7 +62,6 @@ function load_posts(user_id, pageNumber=1) {
     });
     
 }
-// edit box added but not yet functional
 
 function  selectEditButtons(){
     //edit post when user clicks 
@@ -67,31 +69,81 @@ function  selectEditButtons(){
     let editButtons = document.querySelectorAll('.edit-btn');
     console.log(editButtons);
     editButtons.forEach(editButton => {
-        editButton.addEventListener('click', processEdit)
+        editButton.addEventListener('click', event => processEdit(event));
     });
 }
 
 
 function processEdit(event) {
-    event.preventDefault()
+    event.preventDefault();
     //save the id of the clicked btn
     const clickedBtnId = event.target.id;
-    console.log(`clicked ID: ${clickedBtnId}`);
 
-    //now get body with this id
-    let bodyEdit = document.querySelector(`#body-${clickedBtnId}`)
-    if (bodyEdit) {
-        console.log('success');
-        bodyEdit.innerHTML = `
-        <div id="edit-post" class="">
-            <form id="edit-post-form">
-                    <label for="post-body" class="form-label, mb- h5">Edit Post</label>
-                    <textarea class="form-control pr-5"  id="post-body" rows="3"></textarea>
-                    <button id="post-edit-btn" class="btn btn-primary mt-2 " value=>Edit</button>
-            </form>
-        </div>`;
+    //store in local storage
+    //check if value in local storage
+    if (!localStorage.getItem(`EditId-${clickedBtnId}`)) {
+        // if not set value to 0 in local storage - not clicked before
+        localStorage.setItem(`EditId-${clickedBtnId}`, 0);
     }
+    
+    // If button clicked for the first time show the text.
+    let counter = parseInt(localStorage.getItem(`EditId-${clickedBtnId}`), 10);
+   
+    if (counter === 0) {
+            //now get body with clicked btn id
+        let bodyEdit = document.querySelector(`#body-${clickedBtnId}`)
+        if (bodyEdit) {
+            console.log('success');
+            console.log(typeof(clickedBtnId));
+            // GET request to get existing post data from the model.
+            fetch(`/load_single/${clickedBtnId}`)
+            .then(response => response.json())
+            .then(post => {
+                bodyEdit.innerHTML = `
+                <div id="edit-post" class="">
+                    <form id="edit-post-form">
+                            <label for="post-body" class="form-label, mb- h5">Edit Post</label>
+                            <textarea class="form-control pr-5"  id="post-body-${clickedBtnId}" rows="3">${post.body}</textarea>
+                    </form>
+                </div>`
+            });
+        }
+    }
+    console.log(`counter ${counter}`);
+    // if clicked again submit the text in the box and update the db.
+    if (counter === 1) {
+        console.log('inloop');
+        const newPostBody = document.querySelector(`#post-body-${clickedBtnId}`).value;
+        console.log(newPostBody);
 
+    //make a post request to load-single updating post body value in db.
+        fetch(`/load_single/${clickedBtnId}`, {
+            method: 'POST',
+            body: JSON.stringify({
+                new_post_body: newPostBody
+            })
+        })
+        .then(response => response.json())
+        .then(result => {
+            // Print result
+            console.log(result['paginator']);
+
+            //clear posts div and reload with a GET request to load posts
+            //clear
+            document.querySelector('#posts-view').innerHTML = '';
+            //reload
+            managePosts();
+
+        });
+    }
+    //update counter ready for next click
+    if (counter === 0) {
+        localStorage.setItem(`EditId-${clickedBtnId}`, 1);
+    }
+    else {
+        localStorage.setItem(`EditId-${clickedBtnId}`, 0);
+    }
+    
 }
 
 

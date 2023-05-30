@@ -127,6 +127,29 @@ def follow(request):
         return JsonResponse(following_id, safe=False)
 
 
+@csrf_exempt
+def load_single(request, post_id):
+    if request.method == 'POST':
+        #get details of post
+        data = json.loads(request.body)
+        post_body = data.get("new_post_body", "")
+
+        if len(post_body) <= 0:
+            return JsonResponse({"error":"Post requires text"}, status=400)
+
+        #edit post
+        post_obj= Post.objects.get(pk=post_id)
+        post_obj.body = post_body
+        post_obj.save()
+
+        return JsonResponse({"message":"Post edited successfully"}, status=201)
+    
+    else:
+        # get single post from id (GET)
+        post = Post.objects.get(pk=post_id)
+        return JsonResponse(post.serialize(), safe=False)
+
+
 
 def load_posts(request, user_id=None):
     if user_id is None:
@@ -147,7 +170,7 @@ def load_posts(request, user_id=None):
     #keep posts in queryset so that .orderby() can be used.
     posts = posts.order_by("-timestamp").all()
     # show 10 posts per page
-    p = Paginator(posts,3)
+    p = Paginator(posts,10)
     page_number = request.GET.get('page')
     print(f'page number: {page_number}')
     try:
