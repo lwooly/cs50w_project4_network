@@ -67,7 +67,7 @@ function  selectEditButtons(){
     //edit post when user clicks 
     //get all edit buttons
     let editButtons = document.querySelectorAll('.edit-btn');
-    console.log(editButtons);
+    // console.log(editButtons);
     editButtons.forEach(editButton => {
         editButton.addEventListener('click', event => processEdit(event));
     });
@@ -77,19 +77,22 @@ function  selectEditButtons(){
 function processEdit(event) {
     event.preventDefault();
     //save the id of the clicked btn
-    const clickedBtnId = event.target.id;
-
-    //store in local storage
-    //check if value in local storage
-    if (!localStorage.getItem(`EditId-${clickedBtnId}`)) {
+    const clickedBtn = event.target;
+    const clickedBtnId = clickedBtn.id;
+    
+    //store counter to see if button clicked
+    if (!sessionStorage.getItem(`EditId-${clickedBtnId}`)) {
         // if not set value to 0 in local storage - not clicked before
-        localStorage.setItem(`EditId-${clickedBtnId}`, 0);
+        sessionStorage.setItem(`EditId-${clickedBtnId}`, 0);
+    }
+    else {
+        console.log(`Exists in storage: ${sessionStorage.getItem(`EditId-${clickedBtnId}`)}`)
     }
     
     // If button clicked for the first time show the text.
-    let counter = parseInt(localStorage.getItem(`EditId-${clickedBtnId}`), 10);
+    let counter = parseInt(sessionStorage.getItem(`EditId-${clickedBtnId}`), 10);
    
-    if (counter === 0) {
+    if (counter == 0) {
             //now get body with clicked btn id
         let bodyEdit = document.querySelector(`#body-${clickedBtnId}`)
         if (bodyEdit) {
@@ -107,13 +110,22 @@ function processEdit(event) {
                     </form>
                 </div>`
             });
+        //change button text to Save
+        if (clickedBtn) {
+            clickedBtn.innerHTML = 'Save';
+        }
         }
     }
     console.log(`counter ${counter}`);
     // if clicked again submit the text in the box and update the db.
-    if (counter === 1) {
+    if (counter == 1) {
+        //update storage value for next click
+        sessionStorage.setItem(`EditId-${clickedBtnId}`, 0);
+
         console.log('inloop');
-        const newPostBody = document.querySelector(`#post-body-${clickedBtnId}`).value;
+        const postEdit = document.querySelector(`#post-body-${clickedBtnId}`);
+        console.log(postEdit);
+        newPostBody = postEdit.value;
         console.log(newPostBody);
 
     //make a post request to load-single updating post body value in db.
@@ -137,13 +149,12 @@ function processEdit(event) {
         });
     }
     //update counter ready for next click
-    if (counter === 0) {
-        localStorage.setItem(`EditId-${clickedBtnId}`, 1);
+    if (counter == 0) {
+        sessionStorage.setItem(`EditId-${clickedBtnId}`, 1);
     }
     else {
-        localStorage.setItem(`EditId-${clickedBtnId}`, 0);
+        sessionStorage.clear();
     }
-    
 }
 
 
